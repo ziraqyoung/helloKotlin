@@ -29,18 +29,18 @@ fun main() {
 
     // 4.1 IF statements - simple control flow in Kotlin
     if (language != null) {
-        println(language)
+        // println(language)
     } else {
-        println("No language specified..")
+        // println("No language specified..")
     }
     // 4.2 WHEN statement - similar to SWITCH statement in Java
     // syntax: pass variable to when(), then add value -> ....
     // Do something when code is "US"
     when(code) {
         // when code == null -> Do print the statement
-        null -> println("Value for code is null")
+        // null -> println("Value for code is null")
         // for default (else) -> print code
-        else -> println(code)
+        // else -> println(code)
     }
 
     // 4.3 Using IF and WHEN as expression to assign a value depending on passed logical conditions
@@ -52,16 +52,51 @@ fun main() {
         null -> "Hi"
         else -> greeting
     }
-    println(secondGreetingToPrint)
+    // println(secondGreetingToPrint)
 
     // calling a function
-    println(getGreeting()) // pass the returned value to println function
-    sayHello() // this code actually does the printing
-    println(returnNullString())
-    println(sayHelloSimplified())
-    greetWithParams("Kotlin")
-    greetWithParams1("Bonjour", "From SEF")
+    // println(getGreeting()) // pass the returned value to println function
+    // sayHello() // this code actually does the printing
+    // println(returnNullString())
+    // println(sayHelloSimplified())
+    // greetWithParams("Kotlin")
+    // greetWithParams1("Bonjour", "From SEF")
+
+    // 6. Collections and Iterations in Kotlin
+    // these are things like: Arrays, Lists and Maps
+    // arrayOf can infer the array you want to create eg Strings
+    val interestingThings = arrayOf("Kotlin", "Programming", "Comic Books")
+    interestingThings.size
+    interestingThings.get(0) // get value occupied by a particular index
+    interestingThings[2] // get a value for a  given index
+
+    // We can loop over a given array with a basic for loop - using for....in
+    // this for loop is similar to what's available in Java
+    for(interestingThing in interestingThings) {
+        interestingThing // do something with each value of interestingThing variable
+    }
+    // Kotlin support for HOF(higher order functions) means we can write function in a declarative way
+    // Functions in Kotlin are first class citizen
+    // forEach() - yields each element in the iteration as it: String
+    // calling interestingThing -> is what is called lambda syntax in Kotlin : If you have a function that its only
+    // parameter is another function then you can omit the parenthesis
+    interestingThings.forEach { interestingThing -> // to rename the name passed instead of it: String use: `nameOfTheThing ->`
+        // lambda expression does not yield the index data for current item, for index use forEachIndexed instead of forEach
+        interestingThing // `it` is the default name of the item passed to this lambda function
+    }
+    interestingThings.forEachIndexed { index, interestingThing -> // get the current item and the index
+        "$interestingThing is at index $index"
+    }
+    // listOf() instead of arrayOf() function has many methods since we are working with list instead of an array
+    // Basically listOf() has more methods that arrayOf() - both are used to create indexed collections
+    val listOfCars = listOf("Mazda", "Fielder", "Subaru", "Noah")
+    listOfCars[0]
+    listOfCars.get(0)
+
+    separatorLine()
+    listOfCars.forEach { interestingThing -> println(interestingThing)}
 }
+
 
 
 // 5. Basic Functions in Kotlin
@@ -105,5 +140,4 @@ fun greetWithParams(itemToGreet: String) {
 
 // since these functions are not enclosed in a class -> they are top-level functions
 fun greetWithParams1(greeting: String, itemToGreet: String) = println("$greeting $itemToGreet") // Using single expression in a function with params
-
-// 6. Collections and Iterations in Kotlin
+fun separatorLine() = println("=".repeat(50))
