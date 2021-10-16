@@ -95,6 +95,33 @@ fun main() {
 
     separatorLine()
     listOfCars.forEach { interestingThing -> println(interestingThing)}
+
+    // mapOf() create pairs - key value map similar to hash in Ruby
+    val map = mapOf(1 to 'a', 2 to 'b', 3 to 'c') // map with 3 pairs of value in it
+    val mutableMapOf = mutableMapOf(1 to 'a', 2 to 'b', 3 to 'c') // map with 3 pairs of value in it
+    // keys are 1,2,3 and values are 'a', 'b', 'c'
+    // to iterate over the map
+    // listOfCars.forEach { interestingThing -> println(interestingThing)}
+    separatorLine()
+    map.forEach { key, value -> println("$key -> $value") }
+    // use `put` in mutableMapOf() to add a new key/value pair to a map
+    mutableMapOf.put(4, 'd') // or mutableMapOf[4] = "d"
+    // by this far we have defined several types of collection Arrays, Lists and Maps
+
+    // Kotlin differentiates between mutable and immutable collection types
+    // By default a collection type in Kotlin is immutable - can't add or subtract values from the collection once initially created
+    // lets try adding anything to the listOf, listOf has no `add` method - immutable by default
+    // Use `mutableTypeOfSomething` eg mutableListOf to allow mutating of collections in Kotlin
+    // Others are `mutableArrayOf(), mutableMapOf()
+    separatorLine()
+    val mutableListOfCars = mutableListOf("AE 102", "Sylph", "X-trail")
+    println(mutableListOfCars.size)
+    mutableListOfCars.add("FJ 90")
+    println(mutableListOfCars.size)
+
+    separatorLine()
+    val vehicles = listOf("AE 102", "Sylph", "X-trail")
+    sayHelloToMultipleThings("Hi", vehicles)
 }
 
 
@@ -141,3 +168,10 @@ fun greetWithParams(itemToGreet: String) {
 // since these functions are not enclosed in a class -> they are top-level functions
 fun greetWithParams1(greeting: String, itemToGreet: String) = println("$greeting $itemToGreet") // Using single expression in a function with params
 fun separatorLine() = println("=".repeat(50))
+
+// this shows that you can pass a collection type to a function in Kotlin as a parameter
+fun sayHelloToMultipleThings(greeting: String, itemsToGreet: List<String>) {
+    itemsToGreet.forEach { item ->
+        println("$greeting $item")
+    }
+}
