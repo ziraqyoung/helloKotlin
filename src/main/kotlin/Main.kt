@@ -122,9 +122,26 @@ fun main() {
     separatorLine()
     val vehicles = listOf("AE 102", "Sylph", "X-trail")
     sayHelloToMultipleThings("Hi", vehicles)
+    // since the second arg of this function is vararg, you do not need the second argument
+    // sayHelloToMultipleThingsWithVararg("Hi"), but with arguments
+    // -> sayHelloToMultipleThingsWithVararg("Hi", "Kotlin", "Ruby")
+    separatorLine()
+    sayHelloToMultipleThingsWithVararg("Hi", "Ruby", "Kotlin")
+    // Note that trying to pass arrayOf("things") to sayHelloToMultipleThingsWithVararg() as 2nd argument, wont work with error `Required string found Array`
+    // To pass array of existing values to the vararg argument - you do it with a spread operator
+    // spread arrayOf() values, with *representationOfYourArrayOf () - spread operator doesn't work with listOf()
+    separatorLine()
+    val bestVehicles = arrayOf("BMW", "Subaru", "Prado")
+    sayHelloToMultipleThingsWithVararg("Hello", *bestVehicles)
+
+    // names parameter for code clarity `name = "Jay" to use named parameters
+    // this allows to mix up the order in which arguments are passed
+    separatorLine()
+    greetPerson(greeting = "Hi", name = "Jay")
+    // Using names parameters with default values to reuse code
+    greetPerson(name = "Matzo")
+    greetPerson(name = "Lisa", greeting = "Good Morning")
 }
-
-
 
 // 5. Basic Functions in Kotlin
 // Both main() and println are functions - println accepts an argument to print
@@ -164,7 +181,6 @@ fun greetWithParams(itemToGreet: String) {
     println(msg)
 }
 
-
 // since these functions are not enclosed in a class -> they are top-level functions
 fun greetWithParams1(greeting: String, itemToGreet: String) = println("$greeting $itemToGreet") // Using single expression in a function with params
 fun separatorLine() = println("=".repeat(50))
@@ -175,3 +191,28 @@ fun sayHelloToMultipleThings(greeting: String, itemsToGreet: List<String>) {
         println("$greeting $item")
     }
 }
+
+// 7. vararg, named arguments & default parameter values
+// varargs parameter for a function in Kotlin - a keyword that represent a variable number of arguments
+// update the above sayHelloToMultipleThings to accepts the second args as `any number of argument instead of a List<String>
+// With vararg, itemsToGreet will be shuffled into an array - supports 0, 1 or any other number of arguments
+fun sayHelloToMultipleThingsWithVararg(greeting: String, vararg itemsToGreet:String) {
+    itemsToGreet.forEach { item ->
+        println("$greeting $item")
+    }
+}
+
+// Kotlin also support named arguments - which helps to get out of clamming the order in which arguments are passed e.g. in Code Reviews
+// To call this function: greetPerson("Hi", "Jay")
+// To call the function greetPerson(greeting = "Hi", name = "Jay")
+// with names arguments you can leverage default values
+// This feature (named parameter & default values) allows leveraging the builder pattern - avoiding the need to write getters and setters
+// and private constructors
+// Configure and reuse functions and objects by leveraging default values and named arguments syntax
+fun greetPerson(greeting: String = "Bonjour", name: String) = println("$greeting $name")
+
+
+// NB named arguments and default have limitations in that `Mixing names paramters and positional arguments is not allowed`
+// val gits = arrayOf("Kotlin", "Programming", "Comic books")
+// this will work -> sayHelloToMultipleThingsWithVararg(greeting = "Hi", itemsToGreet = *gits)
+// this will WONT work(mixing positions args with named args -> sayHelloToMultipleThingsWithVararg(greeting = "Hi", *gits)
