@@ -1,3 +1,5 @@
+// ===============================================================================================================================
+
 // 1.   Creating a class
 // with the new IntelliJ IDE go to: src/main/kotlin -> new Kotlin File/Class - select class
 // primary constructor parameters goes in the class header
@@ -14,10 +16,13 @@ val f = Person("Jay", "Doe")
 // If you are writing OOP code use `var` so you can easily mutate them,
 // If you prefer FP, consider Using Kotlin data class
 
+// ===============================================================================================================================
+
 // 3. Constructor parameters visibility
 // class constructor params are defined in the class header
 // `var` means values are mutable -have both getters and setters (read-from and written-to) while val values are immutable (read-only)
 
+// ===============================================================================================================================
 
 // 4. Annotations and visibility modifiers
 // If the class constructor has annotations or visibility modifiers, the constructor keyword is required
@@ -28,6 +33,8 @@ val f = Person("Jay", "Doe")
 // `internal` modifiers is visible anywhere inside the same module
 
 // class Customer public @Inject constructor(name: String)
+
+// ===============================================================================================================================
 
 // 5. Import and Packages
 // -they are very similar to Java  - but Kotlin support renaming of a class when it is imported
@@ -43,6 +50,7 @@ val f = Person("Jay", "Doe")
 // kotlin.collections, kotlin.comparisons, kotlin.*, kotlin.ranges, kotlin.annotations, kotlin.texts, kotlin.io etc
 // println() is defined in `kotlin.io` package hence automatically made available
 
+// ===============================================================================================================================
 
 // 6. Class Members
 // classes contains constructors, constructor initializer blocks, functions, properties, Nested and Inner classes, Object declarations
@@ -116,6 +124,8 @@ class Person5(val firstName: String,  val lastName: String) {
 
 }
 
+// ===============================================================================================================================
+
 // 7. Custom class fields Getters and Setters
 // - Kt has properties (called fields in Java) - defined with `val` or `var`
 // - val are read-only and var are read/write
@@ -148,6 +158,8 @@ class Person6 {
     }
 }
 
+// ===============================================================================================================================
+
 // 8. Constructor Default Values & Named Arguments
 // - Kotlin has 2 feature borrowed from Scala: 1. default values for constructor params 2. use named arguments when calling constructor
 // - to use class without default constructor params
@@ -165,6 +177,8 @@ class Person6 {
 class Socket1(var timeout: Int = 2000, var linger: Int = 3000) {
     override fun toString(): String = "timeout: $timeout, linger: $linger"
 }
+
+// ===============================================================================================================================
 
 // 9.0 Secondary class constructors in Kotlin
 // Rule about Kotlin Secondary constructors
@@ -221,6 +235,63 @@ class Pizza constructor(
 // - the @JvmOverloads annotation "Instruct the kotlin compiler to generate the overloads for this function that substitute default parameter values
 // - Not used so much but used when generating multiple constructors when you want to work with Java code
 // - TODO: HARD TO PICK THIS CONCEPT FOR ME
+
+// ===============================================================================================================================
+
+// 10. Open and final classes (Concept of fragile classes in Kotlin)
+// - Kotlin classes and functions are `final` by default, this is due fragile base class problem
+// - Mark a class as `open` to allow it to be extended (open to be extended)
+// - To allow class functions and fields to be overriden, you must mark them as `open`
+
+//      10. 1 Classes and functions are final by default
+
+// - a. Classes and functions are not open (default)
+//   class Parent { // class is final by default
+//     fun name(): String = "base" // function is final by default
+//  }
+// creating a class that inherit from Parent, trying to override name wont work
+//   class Child : Parent() { // this type is final, so it cannot be inherited
+//       override fun name(): String = "Child" // name in 'Parent' is final so it cannot be overriden
+//  }
+
+// - b. Class is open, function is final
+//  open class Parent { // class mark as open, so it can be inherited
+//     fun name() = "base"
+//  }
+//
+//  class Child : Parent() { // this is OK since class Parent is final
+//    // this won't work: name' in 'Parent' is final and cannot be overridden
+//    override fun name() = "Child"
+//  }
+// - c. Success: Class and function are open (marking both class and function as open)
+open class Parent {
+    open fun name() = "base"
+}
+
+class Child : Parent() {
+    // this function needs the override modifier on `Child::name to override parent function
+    override fun name() = "Child"
+}
+
+//      10.2: Closing an open method
+// - consider this code
+open class A {
+    open fun foo() = "foo in A"
+}
+
+// removing the open class from  class B will make the class B final again making it no other class can inherit from it
+// with an error: this type is final, so it cannot be inherited from
+open class B : A() {
+    // you can mark the function foo as final to disallow any class inheriting from B to override the function foo
+    final override fun foo() = "foo in B"
+    // override fun foo() = "foo in B"
+}
+
+open class C : B() {
+    // this won’t compile because `foo` is marked
+    // `final` in B
+    // override fun foo() = "foo in C" // error: 'foo' in 'B' is final and cannot be overridden
+}
 
 fun main() {
     // 2. Kotlin instances of a class are created WITHOUT new key word
