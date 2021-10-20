@@ -293,6 +293,80 @@ open class C : B() {
     // override fun foo() = "foo in C" // error: 'foo' in 'B' is final and cannot be overridden
 }
 
+// ===============================================================================================================================
+
+// 11. Abstract classes - very similar to what Java provides
+// - A class declared as abstract cannot be instantiated, & have abstract and concrete methods and abstract and concrete fields
+// - abstract classes and members (functions and fields) CANNOT be annotated with `open`  - i.e they are not intended to be overriden
+// - can have private and protected members
+
+//      11.1 Functions in abstract classes
+// - Function can be abstract - they have only a function signature but no body
+// - Concrete but closed - final (you cannot override it)
+// - Concrete and open to modification
+
+abstract class Pet0(name: String) { // marked as abstract hence cannot be instantiated
+    // abstract function for abstract classes MUST be implemented by inheriting class
+    // Others are concrete and open (have function body)
+    abstract fun comeToMaster() : Unit // abstract function (open by default) no function body
+    fun walk() : Unit = println("I'm walking") // final function: Concrete , closed (final) // cannot be modified
+    open fun speak() : Unit = println("Yo") // Concrete and open
+
+}
+
+//      11.2 Working code  - this code shows how abstract classes and functions works with inheritance
+abstract class Pet(name: String) {
+    abstract fun comeToMaster() : Unit // abstract method (open by default, require implementation)
+    fun walk(): Unit = println("I'm walking") // concrete and closed (final)
+    open fun speak() : Unit = println("Yo")
+}
+
+// Dog class that inherits from  Pet class
+class Dog(name: String) : Pet(name) {
+    // abstract members of an abstract class must be implemented
+    override fun comeToMaster() : Unit = println("Here I come")
+    // speak function which is concrete and open hence can or cannot be implemented (open makes it optional)
+    override fun speak() : Unit = println("Woof")
+}
+
+// Dog class that inherits from  Pet class
+class Cat(name: String) : Pet(name) {
+    // abstract members of an abstract class must be implemented
+    override fun comeToMaster() : Unit = println("That's not gonna happen")
+    // speak function which is concrete and open hence can or cannot be implemented (open makes it optional)
+    override fun speak() : Unit = println("Meow")
+}
+
+//      11.3 Other features of abstract classes
+// - Abstract classes can have private properties, abstract properties and concrete properties
+// Consider this Pet1 class
+abstract class Pet1(name: String) {
+    abstract fun comeToMaster(): Unit          //abstract method
+    fun walk(): Unit = println("I’m walking")  //concrete, closed (final)
+    open fun speak(): Unit = println("Yo")     //concrete, open
+
+    // Abstract class's fields have the same rules applied to them just like functions
+    private var numberOfLegs = 4       // private field
+    abstract var furColor: String      // abstract field (no initial value)
+    var actuallyLikesPeople = false    //concrete field, must have a value
+}
+
+//      11.4 Why use abstract classes instead of Interfaces
+// - Interfaces cannot have constructor parameters, initialized fields or private properties
+// - Due to the fact that interfaces cannot have `backing field`
+// Consider this:
+interface Cat0 {
+    private var numLegs: Int
+        get() = 4
+        set(value) = TODO()   // can’t use `field`
+
+}
+
+//  11.5 A note about designing a base class
+// - "Designing a base class, you should therefore avoid using open members in the constructors, property initializers, and init blocks
+
+// ===============================================================================================================================
+
 fun main() {
     // 2. Kotlin instances of a class are created WITHOUT new key word
     // Its like calling a function call
@@ -330,4 +404,14 @@ fun main() {
     val ss = Socket1(timeout = 2000, linger = 3000)
     println("timeout: ${ss.timeout} linger: ${ss.linger}")
 
+    // Abstract classes example
+    val d = Dog("Zeus")
+    d.walk() // comes from  inherited class
+    d.speak() // implemented by Dog class
+    d.comeToMaster() //implemented by Dog class
+
+    val c = Cat("Rusty")
+    c.walk() // comes from inherited class
+    c.speak() // implemented by Cat class
+    c.comeToMaster() // implemented by the Cat class
 }
