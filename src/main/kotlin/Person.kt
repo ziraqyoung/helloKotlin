@@ -116,6 +116,112 @@ class Person5(val firstName: String,  val lastName: String) {
 
 }
 
+// 7. Custom class fields Getters and Setters
+// - Kt has properties (called fields in Java) - defined with `val` or `var`
+// - val are read-only and var are read/write
+// - Fields (properties are accessed directly by the name) - they are public by default but can be made private
+// - You can create custom getters(accessor) and setters(mutator) methods for your properties with a special syntax
+// - Getters and setters can use a 'backing field' named field
+
+// 7.1 Kotlin field without getter and setter - declare such field as var
+class Person6 {
+    var initials: String = ""
+    // this allows to do - using getter and setter for a simple property
+    // val p = Person6()
+    // p.initials // get (access) value
+    // p.initials = "JN" // set the value
+
+    // 7.2 Custom get/set methods
+    // - define custom get() and set() methods just below the prop name to create custom getter and setter
+    // - eg: make a log entry everytime someone access or updates the name attribute of the person
+    // Keypoints:
+    // - getters and setters can use the backing field named field getter:(return field) and setter:(field = passed_value)
+    // - field is the way to refence the value you were referencing in this case `name` field
+    var name: String = "<no name>"
+    get() { // custom getter method
+       println("OMG, someone accessed 'name'")
+        return field // Backing field in Kt
+    }
+    set(s) { // custom setter method
+        println("OMG, someone updated the value of 'name' to be $s")
+        field = s // this is called backing field in Kt
+    }
+}
+
+// 8. Constructor Default Values & Named Arguments
+// - Kotlin has 2 feature borrowed from Scala: 1. default values for constructor params 2. use named arguments when calling constructor
+// - to use class without default constructor params
+// - class Socket1(var timeout: Int, var linger: Int) {
+//      override def toString = "timeout: $timeout, linger: $linger"
+// }
+// 8.1 Default values in class constructors
+// - to supply default values for timeout and linger - (DEFAULT VALUES)
+// - with default values, you do not need to pass any values
+// 8.2 Named arguments
+// - Named arguments are used when creating new instances of a class
+// - Given below Socket1 class: a new instance with a named argument will be
+// - var s = Socket1(timeout = 2000, linger = 3000)
+// - Named arguments make you code more readable especially in Code Reviews.
+class Socket1(var timeout: Int = 2000, var linger: Int = 3000) {
+    override fun toString(): String = "timeout: $timeout, linger: $linger"
+}
+
+// 9.0 Secondary class constructors in Kotlin
+// Rule about Kotlin Secondary constructors
+//      a. a class can have 0 or more secondary constructors
+//      b. a secondary constructor must call the primary constructor, (either calling it directly or calling another secondary constructor that calls the primary constructor)
+//      c. other constructors are called via `this` keyword
+//      d. the @JvmOverloads annotations lets Kotlin classes that have default parameters values be created in Java code
+// - Below is an example with primary constructor and two other auxiliary constructors
+class Pizza constructor(
+    // this denotes the primary constructor
+    var crustSize: String,
+    var crustType: String,
+    var toppings: MutableList<String> = mutableListOf() // toppings has default list of empty
+) {
+    // this denotes secondary constructor (no-args
+    // defines with constructor keyword - this calls primary constructor via `this`
+    constructor() : this("SMALL", "THIN")
+
+    // secondary constructor (2-args)
+    constructor(
+        crustSize: String,
+        crustType: String
+    ) : this(
+        crustSize,
+        crustType, mutableListOf<String>()
+    )
+
+    // overriding a function is like defining the same function
+    // that is fun main() {} or fun toString() but you put override at the start of the fun keyword
+    override fun toString(): String = "size: ${crustSize}, type: ${crustType}, toppings: ${toppings}"
+
+    // with this class and its 3 constructors (primary and the 2 auxiliary constructors)
+    // you can use this class in 3 ways
+    // 1. Pass nothing and the second constructor will be called with crustSize: SMALL and crustType as THIN
+    //      Pizza() -> second constructor called crustSize: SMALL and crustType as THIN,
+    // 2. Pass crustSize and crustType eg LARGE and THICK & the 3rd constructor with 2 args will be called
+    //      Pizza("Large", "THICK")
+    // 3. Pass all arguments and the primary constructor will be called
+    //     Pizza("MEDIUM", "REGULAR", mutableListOf("CHEESE",  "PEPPERONI"))
+
+
+    // Default constructor values eliminates the need for secondary constructors like this:
+    // class Pizza2 constructor(
+    //    var crustSize: String = "SMALL",
+    //    var crustType: String = "THIN",
+    //    val toppings: MutableList<String> = mutableListOf()
+    // ) {
+    //     override fun toString(): String = "size: ${crustSize}, type: ${crustType}, toppings: ${toppings}"
+    // }
+    //
+}
+
+// 9.1 @JvmOverloads (Working with Java)
+// - the @JvmOverloads annotation "Instruct the kotlin compiler to generate the overloads for this function that substitute default parameter values
+// - Not used so much but used when generating multiple constructors when you want to work with Java code
+// - TODO: HARD TO PICK THIS CONCEPT FOR ME
+
 fun main() {
     // 2. Kotlin instances of a class are created WITHOUT new key word
     // Its like calling a function call
@@ -142,4 +248,15 @@ fun main() {
     val nestedClass = Person5.Nested().foo()
     println(nestedClass)
     val innerClass = Person5("Jane", "Doe").Inner().foo()
+
+    // using custom getters and setters
+    val person6 = Person6()
+    person6.name = "Jane" // custom setter will be invoked
+    person6.name //custom getter will be invoked
+
+    // using default constructor parameter values
+    println(Socket1(3000, 4000))
+    val ss = Socket1(timeout = 2000, linger = 3000)
+    println("timeout: ${ss.timeout} linger: ${ss.linger}")
+
 }
