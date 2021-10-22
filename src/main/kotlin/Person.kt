@@ -58,9 +58,10 @@ val f = Person("Jay", "Doe")
 class Person1(name: String, age: Int) // when no visibility modifiers or annotations are required
 class Person2 @JvmOverloads constructor(name: String, age: Int) // when only annotation is passed
 class Person3 @JvmOverloads private constructor(name: String, age: Int) // passing annotations and visibility modifiers
+
 //      6.2 init block - primary initialization code goes inside `init block
-        // functions similar to initialize block
-        // Kotlin supports multiple init blocks
+// functions similar to initialize block
+// Kotlin supports multiple init blocks
 class Person4(name: String) {
     // code inside init block runs when an instance of a class is created
     // this prints when a new instance is created
@@ -71,18 +72,21 @@ class Person4(name: String) {
         println("Hi $name")
     }
 }
+
 class Socket(var timeout: Int, var linger: Int) {
     init {
         println("Entered 'init'...")
         println("timeout = $timeout, linger = $linger")
     }
 }
+
 //      6.3 Methods (functions)
 // Kt functions are correctly called method on OOP - to create a method fullname
 // prefix with val or var to access constructor params in the class
-class Person5(val firstName: String,  val lastName: String) {
+class Person5(val firstName: String, val lastName: String) {
     // defining a method inside a class
     fun fullName() = "$firstName $lastName"
+
     //  a method that accepts an argument
     fun addTopping(t: String) {
         toppings.add(t)
@@ -98,9 +102,10 @@ class Person5(val firstName: String,  val lastName: String) {
     // NB: the weird syntax Person5.Nested().foo()
     // usage: Person5.Nested().foo()
     private val x = 1
+
     class Nested {
         // this won't have access to val x -  to access this use inner class (prefix with inner)
-        fun foo() : Int {
+        fun foo(): Int {
             // println("From inner class and outer variable $x accessible") // x not available
             return 2
         }
@@ -111,6 +116,7 @@ class Person5(val firstName: String,  val lastName: String) {
     // To call an inner class -> Person5().Inner().foo() - weird thing going on with inner class and nested class
     // usage: Person5().Inner().foo()
     private val y = 1
+
     inner class Inner {
         fun foo() {
             println("From inner class and outer variable $y accessible")
@@ -148,14 +154,14 @@ class Person6 {
     // - getters and setters can use the backing field named field getter:(return field) and setter:(field = passed_value)
     // - field is the way to refence the value you were referencing in this case `name` field
     var name: String = "<no name>"
-    get() { // custom getter method
-       println("OMG, someone accessed 'name'")
-        return field // Backing field in Kt
-    }
-    set(s) { // custom setter method
-        println("OMG, someone updated the value of 'name' to be $s")
-        field = s // this is called backing field in Kt
-    }
+        get() { // custom getter method
+            println("OMG, someone accessed 'name'")
+            return field // Backing field in Kt
+        }
+        set(s) { // custom setter method
+            println("OMG, someone updated the value of 'name' to be $s")
+            field = s // this is called backing field in Kt
+        }
 }
 
 // ===============================================================================================================================
@@ -308,33 +314,35 @@ open class C : B() {
 abstract class Pet0(name: String) { // marked as abstract hence cannot be instantiated
     // abstract function for abstract classes MUST be implemented by inheriting class
     // Others are concrete and open (have function body)
-    abstract fun comeToMaster() : Unit // abstract function (open by default) no function body
-    fun walk() : Unit = println("I'm walking") // final function: Concrete , closed (final) // cannot be modified
-    open fun speak() : Unit = println("Yo") // Concrete and open
+    abstract fun comeToMaster(): Unit // abstract function (open by default) no function body
+    fun walk(): Unit = println("I'm walking") // final function: Concrete , closed (final) // cannot be modified
+    open fun speak(): Unit = println("Yo") // Concrete and open
 
 }
 
 //      11.2 Working code  - this code shows how abstract classes and functions works with inheritance
 abstract class Pet(name: String) {
-    abstract fun comeToMaster() : Unit // abstract method (open by default, require implementation)
+    abstract fun comeToMaster(): Unit // abstract method (open by default, require implementation)
     fun walk(): Unit = println("I'm walking") // concrete and closed (final)
-    open fun speak() : Unit = println("Yo")
+    open fun speak(): Unit = println("Yo")
 }
 
 // Dog class that inherits from  Pet class
 class Dog(name: String) : Pet(name) {
     // abstract members of an abstract class must be implemented
-    override fun comeToMaster() : Unit = println("Here I come")
+    override fun comeToMaster(): Unit = println("Here I come")
+
     // speak function which is concrete and open hence can or cannot be implemented (open makes it optional)
-    override fun speak() : Unit = println("Woof")
+    override fun speak(): Unit = println("Woof")
 }
 
 // Dog class that inherits from  Pet class
 class Cat(name: String) : Pet(name) {
     // abstract members of an abstract class must be implemented
-    override fun comeToMaster() : Unit = println("That's not gonna happen")
+    override fun comeToMaster(): Unit = println("That's not gonna happen")
+
     // speak function which is concrete and open hence can or cannot be implemented (open makes it optional)
-    override fun speak() : Unit = println("Meow")
+    override fun speak(): Unit = println("Meow")
 }
 
 //      11.3 Other features of abstract classes
@@ -367,6 +375,128 @@ interface Cat0 {
 
 // ===============================================================================================================================
 
+// 12. Kotlin interfaces
+// - Kotlin interfaces are very similar to Java interfaces or traits in Scala
+// Points:
+// - Defined with `interface` keyword
+// - Can declare functions which can be `concrete` or `abstract`
+// - Can declare fields (properties) which can be abstract and can also provide implementation for accessors
+// - Can inherit or derive from other interfaces
+// - A class or an object can implement one or more interfaces
+// - If your multiple inherited interfaces have methods with same name and signature, then you have to resolve the arising conflict manually
+// Use Abstract Classes instead of Interfaces when:
+// 1. You need constructor params
+// 2. You need concrete read/write fields
+// 3. You need private members
+//      12.1 Interfaces with Concrete and Abstract methods
+// - Kotlin interfaces can have abstract functions (must be implemented) and concrete functions (can or cannot be implemented)
+// To define a Kotlin interfaces
+// Speaker interface
+interface Speaker {
+    // creating an abstract method
+    fun speak(): String
+}
+
+// TailWagger interface
+interface TailWagger {
+    // concrete implementations
+    fun startTail() {
+        println("tail is wagging")
+    }
+
+    fun stopTail() {
+        println("tail is stopped")
+    }
+}
+
+// Using and Multiple Interfaces in a class
+class Dog1 : Speaker, TailWagger { // Dog1 class implements Speaker and TailWagger interfaces
+    // NB: Abstract functions must be overridden in the class implementing the interface(s)
+    // overriding an abstract method
+    override fun speak(): String = "Woof!"
+
+    // overriding a concrete function
+    override fun stopTail() {
+        println("can't stop the tails")
+    }
+}
+
+//      12.2 Properties
+// - Interfaces can define properties (fields)
+// - Interface fields can be abstract
+// - Interfaces allows to define an accessor(getter) for a field but not a setter
+interface PizzaInterface {
+    var numToppings: Int // abstract properties
+    var size: Int // abstract property
+    val maxNumToppings: Int // concrete prop, NB you must use val for this
+        get() = 10
+}
+
+class Pizza1 : PizzaInterface {
+    // simple field override
+    override var numToppings = 0
+    // override with get() and set()
+    // This requires the field be instantiated
+    override var size: Int = 14 // first instantiate the field
+        // override with get() and set()
+        get() = field
+        set(value) { field = value}
+    //override on a `val`
+    override val maxNumToppings: Int
+       // get() = super.maxNumToppings
+        get() = 20
+}
+//      12.3 Inheritance
+// - Interfaces can extend other interfaces - override their props and methods, and declare new properties and functions
+// - Example: - interface with one function
+interface StarTrekCrewMember {
+    fun uniformColor() : String
+}
+
+// An interface that extends another interface
+interface Officer : StarTrekCrewMember {
+    // this interface overrides the extended interface method
+    override fun uniformColor() : String = "red (sorry about the luck)"
+    // Also defines its method (function )
+    fun diePainfulDeath() : String = "I'm dead"
+}
+// Other interfaces
+interface Starship
+interface WarpCore
+interface WarpCoreEjector
+
+// A class with multiple interfaces extended into it
+class Enterprise : Starship, WarpCore, WarpCoreEjector
+//      12.4 Resolving Inheritance conflicts
+// - Occurs when a class extends multiple interfaces and those interfaces have common methods
+// - this conflicts needs to he handled manually
+// - Functions foo() and bar() are in class C1, where C1 extends both interfaces A1 and B1
+interface A1 {
+    fun foo() { println("foo: A1") }
+    fun bar() : Unit
+}
+
+interface B1 {
+    fun foo () { println("foo: B1") }
+    fun bar() { println("bar: B1") }
+}
+
+class C1 : A1, B1 {
+    // functions defined both in A1 and B1
+    override fun foo() {
+        super<A1>.foo() // simply calls the foo() method from interface A1
+        super<B1>.foo() // call the foo() version of interface B1
+        println("foo: C")
+    }
+
+    override fun bar() {
+        super<B1>.bar() // call the B1 foo method
+        println("bar: C")
+    }
+}
+
+// ===============================================================================================================================
+
 fun main() {
     // 2. Kotlin instances of a class are created WITHOUT new key word
     // Its like calling a function call
@@ -386,7 +516,7 @@ fun main() {
     val p5 = Person5("Jane", "Doe")
     // populating kotlin class properties with values
     p5.toppings.add("Good")
-   p5.toppings
+    p5.toppings
     p5.fullName()
 
     // using a nested class
@@ -414,4 +544,29 @@ fun main() {
     c.walk() // comes from inherited class
     c.speak() // implemented by Cat class
     c.comeToMaster() // implemented by the Cat class
+
+    // Example: Interface functions to class usage
+    val d1 = Dog1()
+    // speak() defined in Speak interface
+    // but overridden in the Dog1 class
+    println(d1.speak())  //"Woof!"
+    d1.startTail()       //"tail is wagging"
+    // stopTails() defined in TailWagger interface
+    // but overridden in the Dog1 class
+    d1.stopTail()        //"can’t stop the tail!"
+
+
+    // Example: Interface fields (properties) to class usage
+    val p1 = Pizza1()
+    println(p1.numToppings)     //0
+    println(p1.size)            //14
+    println(p1.maxNumToppings)  //20
+
+    p1.numToppings = 5
+    p1.size = 16
+
+    // Example of Resolving conflicts in Interfaces
+    val c1 = C1()
+    c1.foo()
+    c1.bar()
 }
