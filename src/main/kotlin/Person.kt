@@ -495,6 +495,80 @@ class C1 : A1, B1 {
     }
 }
 
+// 13 Object equality (== and === )
+// - involves comparing objects - class instances (works differently from Java, it works similar to Scala)
+// Points
+// - == (calls equals ) under the hood  - checks for structure equally
+// - === tests reference equality
+// - Classes do not have `equals` or `hashCode` methods by default, you need to implement them
+// - Data classes have automatically generated `equals` and `hashCode` methods
+//      13.1 == and ===
+//  Below code shows how object equality works when a class (Person7) doesn't have `equals` method & when a class (PersonWithEquals) has `equals` method
+class Person7(var name: String) // this class doesn't have equals method
+
+class Person7WithEquals(var name: String) { //  class that implements equals method
+    override fun equals(that: Any?) : Boolean {
+        if (that == null) return false
+        if (that !is Person7WithEquals) return false
+
+        if (this.name == that.name) {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+// ===============================================================================================================================
+
+// 14. Enumerations
+// - Kotlin enumerations are similar to those of other classes eg Java
+// - They are declared using `enum class` - & can have `constructor params`, `properties` and `functions`
+// - Enumerations can be used in `if` and `when` constructs and `for` loops
+//      14.1 Basic Enumerations
+// - Simple enumerations are used to create 'small groups of constants', eg days of the week, months in an year, suite of decks in a card' (groups of related constants)
+enum class DayOfWeek {
+    SUNDAY, MONDAY, TUESDAY,
+    WEDNESDAY, THURSDAY, FRIDAY, SATURDAY;
+}
+enum class Suite {
+    CLUBS, SPADES, DIAMONDS, HEARTS;
+}
+//      14.2 The full power of Enumerations (constructors, properties and functions)
+// - In addition to simple constructs, enumerations can have 'constructor params', 'properties' and 'functions' just like a regular class
+enum class Planet(val mass: Double, val radius: Double) { // constructors in an enum class
+    Mercury(3.303e+23, 2.4397e6),
+    Venus(4.869e+24, 6.0518e6),
+    Earth(5.976e+24, 6.37814e6); // semicolon is required when enumeration have constructor params
+
+
+    // Properties in an enumerations
+    // universal gravitational constant (m3 kg-1 s-2)
+    val G = 6.67300E-11
+
+    // function in enumerations
+    fun surfaceGravity() : Double  {
+        return G * mass / (radius * radius)
+    }
+
+    fun surfaceWeight(otherMass: Double): Double {
+        return otherMass * surfaceGravity();
+    }
+}
+//      14.3 Enumerations with `if`, `when` and `for`
+// 14.3.1: If expressions with Enumerations
+// 14.3.2: when expression with enumerations
+enum class Margin {
+   TOP, RIGHT, BOTTOM, LEFT
+}
+
+// using when expression with Enumerations
+fun getMarginValue(margin: Margin)  = when (margin) { // passed an enum class
+    Margin.TOP -> "1em"
+    Margin.RIGHT -> "12px"
+    Margin.BOTTOM -> "1.5em"
+    Margin.LEFT -> "6px"
+}
+
 // ===============================================================================================================================
 
 fun main() {
@@ -555,7 +629,6 @@ fun main() {
     // but overridden in the Dog1 class
     d1.stopTail()        //"can’t stop the tail!"
 
-
     // Example: Interface fields (properties) to class usage
     val p1 = Pizza1()
     println(p1.numToppings)     //0
@@ -569,4 +642,29 @@ fun main() {
     val c1 = C1()
     c1.foo()
     c1.bar()
+
+    // Example: Using Enum class in Kotlin
+    val earthWeight = 200.0
+    val mass = earthWeight / Planet.Earth.surfaceGravity() // Planet.Earth - Enum class
+    for (p in Planet.values()) {
+        val x = String.format("You weight on %s is %.2f", p, p.surfaceWeight(mass) )
+        println(x)
+    }
+
+    // Examples of using if expression with Enumerations
+    val today = DayOfWeek.MONDAY
+
+    if (today == DayOfWeek.MONDAY) {
+        println("Monday")
+    } else if (today == DayOfWeek.TUESDAY) {
+        println("Tuesday")
+    }
+    // Example of Using `when` expression with Enumerations
+    println(getMarginValue(Margin.TOP))
+    // Example of using `for` loop in Enumerations
+    println("==========================================================")
+    for(m in Margin.values()) {  println(m) }
+    println("==========================================================")
+    for(m in Planet.values()) {  println(m) }
+
 }
